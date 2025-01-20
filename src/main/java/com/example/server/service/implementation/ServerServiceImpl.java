@@ -7,11 +7,13 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import static com.example.server.enumeration.Status.*;
 import static java.lang.Boolean.*;
@@ -71,6 +73,7 @@ public class ServerServiceImpl implements ServerService {
     }
 
     private String setServerImage() {
-        return null;
+        String[] imageNames = {"server1.png", "server2.png", "server3.png", "server4.png"};
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path("/server/image" + imageNames[new Random().nextInt(4)]).toUriString();
     }
 }
