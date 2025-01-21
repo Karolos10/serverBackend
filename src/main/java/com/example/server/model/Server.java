@@ -91,4 +91,17 @@ public class Server {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    /*@Override
+    public String toString() {
+        return "Server{" +
+                "id=" + id +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", name='" + name + '\'' +
+                ", memory='" + memory + '\'' +
+                ", type='" + type + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", status=" + status +
+                '}';
+    }*/
 }

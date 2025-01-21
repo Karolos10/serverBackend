@@ -5,18 +5,20 @@ import com.example.server.model.Response;
 import com.example.server.model.Server;
 import com.example.server.service.implementation.ServerServiceImpl;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.PublicKey;
+import java.util.Collection;
 import java.util.Map;
 
 import static com.example.server.enumeration.Status.*;
 import static java.time.LocalDateTime.now;
-import static java.util.Map.*;
+import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
@@ -24,6 +26,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RestController
 @RequestMapping("/server")
 public class ServerResource {
+    private static final Logger log = LoggerFactory.getLogger(ServerResource.class);
     private final ServerServiceImpl serverService;
 
     public ServerResource(ServerServiceImpl serverService) {
@@ -58,12 +61,12 @@ public class ServerResource {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Response> saveServer(@PathVariable @Valid Server server) {
+    public ResponseEntity<Response> saveServer(@RequestBody @Valid Server server) {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(now())
                         .data(of("servers", serverService.create(server)))
-                        .message("Server created")
+                        .message("Servidor creado")
                         .status(CREATED)
                         .statusCode(CREATED.value())
                         .build()
@@ -76,7 +79,7 @@ public class ServerResource {
                 Response.builder()
                         .timeStamp(now())
                         .data(of("server", serverService.get(id)))
-                        .message("Server retrieved successfully")
+                        .message("Servidor obtenido exitosamente")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
@@ -89,16 +92,30 @@ public class ServerResource {
                 Response.builder()
                         .timeStamp(now())
                         .data(of("server", serverService.delete(id)))
-                        .message("Server deleted successfully")
+                        .message("Servidor eliminado exitosamente")
                         .status(OK)
                         .statusCode(OK.value())
                         .build()
         );
     }
 
-
     @GetMapping(path = "/image/{fileName}", produces = IMAGE_PNG_VALUE)
     public byte[] getServerImage(@PathVariable("fileName") String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "Downloads/images/" + fileName));
+        return Files.readAllBytes(Paths.get(System.getProperty("user.home") + "/Downloads/images/" + fileName));
     }
+
+
+    /*@GetMapping(path = "/image/{fileName}", produces = IMAGE_PNG_VALUE)
+    public byte[] getServerImage(@PathVariable("fileName") String fileName) throws IOException {
+        String userHome = System.getProperty("user.home");
+        log.info("Directorio de inicio del usuario: {}", userHome); // Registrar la ruta del directorio de inicio del usuario
+        String imagePath = userHome + "\\Downloads\\images\\" + fileName;
+        log.info("Ruta de la imagen: {}", imagePath); // Registrar la ruta de la imagen
+        try {
+            return Files.readAllBytes(Paths.get(imagePath));
+        } catch (IOException e) {
+            log.error("Error al leer el archivo: {}", imagePath, e);
+            throw e;
+        }
+    }*/
 }
